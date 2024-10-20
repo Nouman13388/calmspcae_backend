@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ee14e5f7-b8c7-4b2b-b1fe-4979731b992c" name="Changes" comment="https setup done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calmspcae_backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/calmspcae_backend/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +102,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1729320768861</updated>
-      <workItem from="1729320771007" duration="10440000" />
+      <workItem from="1729320771007" duration="13722000" />
     </task>
     <task id="LOCAL-00001" summary="https setup done">
       <option name="closed" value="true" />
