@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic
+from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -37,19 +37,32 @@ class ProfessionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professional
         fields = '__all__'
-        extra_kwargs = {'user': {'read_only': True}}
+        extra_kwargs = {
+            'user': {'required': True}  # Ensure user is required
+        }
 
     def validate_user(self, value):
-        # Check if a professional with this user already exists
+        # Check if a professional with this user already exists (for create only)
         if self.instance is None and Professional.objects.filter(user=value).exists():
             raise serializers.ValidationError("A professional with this user already exists.")
         return value
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
-        return value
+    def create(self, validated_data):
+        # Ensure the user is included in validated_data
+        user = validated_data.get('user')
+        if not user:
+            raise serializers.ValidationError({'user': 'This field is required.'})
 
+        # Create professional instance
+        professional = Professional.objects.create(**validated_data)
+        return professional
+
+    def update(self, instance, validated_data):
+        # Update existing professional
+        instance.specialization = validated_data.get('specialization', instance.specialization)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.save()
+        return instance
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,10 +80,6 @@ class ClinicSerializer(serializers.ModelSerializer):
         model = Clinic
         fields = '__all__'
 
-
-# serializers.py
-from rest_framework import serializers
-from .models import Article
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
