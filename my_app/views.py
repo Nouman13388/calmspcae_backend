@@ -36,14 +36,30 @@ def get_mental_health_content(request):
 
 
 # User view set for user management
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]  # Allow access without authentication
+    permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['id', 'email']
     search_fields = ['name', 'email']
     ordering_fields = ['id', 'name', 'email']
+
+    @action(detail=False, methods=['get'])
+    def get_by_email(self, request):
+        email = request.query_params.get('email', None)
+        if email:
+            try:
+                user = User.objects.get(email=email)
+                serializer = self.get_serializer(user)
+                return Response(serializer.data)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=404)
+        return Response({"error": "Email parameter is required"}, status=400)
+
 
 
 # Profile management without unnecessary permissions
@@ -57,7 +73,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 # Read-only viewset for assessments
-class AssessmentViewSet(viewsets.ReadOnlyModelViewSet):
+class AssessmentViewSet(viewsets.ModelViewSet):
     queryset = Assessment.objects.all()
     serializer_class = AssessmentSerializer
     permission_classes = [AllowAny]  # Allow access without authentication
