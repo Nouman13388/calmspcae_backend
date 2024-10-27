@@ -39,6 +39,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend development URL
     "https://your-production-domain.com",  # Replace with actual production domain
+    "http://172.17.239.232:8000",
 ]
 
 # Security settings
@@ -61,8 +62,11 @@ ASGI_APPLICATION = 'calmspcae_backend.asgi.application'  # Updated project name
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # WSL IP address
+        },
+    },
 }
 
 MIDDLEWARE = [
