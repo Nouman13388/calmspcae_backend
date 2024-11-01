@@ -62,6 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 
+
 # Profile management without unnecessary permissions
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()

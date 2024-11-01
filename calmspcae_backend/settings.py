@@ -16,7 +16,7 @@ SECRET_KEY = config('SECRET_KEY')
 IS_PRODUCTION = config('IS_PRODUCTION', default=False, cast=bool)
 DEBUG = not IS_PRODUCTION  # Set DEBUG to True only in development
 
-ALLOWED_HOSTS = ['16.171.9.75', '127.0.0.1', 'localhost', '.vercel.app', '.now.sh']  # Add more hosts as needed
+ALLOWED_HOSTS = ['50.19.24.133','16.171.9.75', '127.0.0.1', 'localhost', '.vercel.app', '.now.sh']  # Add more hosts as needed
 
 # Application definition
 INSTALLED_APPS = [
