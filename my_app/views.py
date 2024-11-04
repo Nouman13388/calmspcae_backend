@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.http import Http404
 from rest_framework import viewsets, filters
 from rest_framework.response import Response
@@ -13,6 +14,10 @@ import requests
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from rest_framework.permissions import AllowAny  # Import AllowAny
+from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+from .models import Therapist
+
 
 
 # Index view for rendering the home page
@@ -159,43 +164,6 @@ class ArticleViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]  # Allow access without authentication
 
 
-class TherapistViewSet(viewsets.ModelViewSet):
-    queryset = Therapist.objects.all()
-    serializer_class = TherapistSerializer
-    permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['id', 'email']
-    search_fields = ['name', 'email']
-
-    def create(self, request, *args, **kwargs):
-        user_id = request.data.get('user')
-        if not user_id:
-            return Response({'error': 'User ID must be provided.'}, status=400)
-
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found.'}, status=404)
-
-        data = request.data.copy()
-        data['user'] = user_id
-        serializer = self.get_serializer(data=data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
-
-        self.perform_create(serializer)
-        return Response(serializer.data, status=201)
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            self.perform_update(serializer)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
-
 # Chat view set for managing chat messages
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = ChatMessage.objects.all()
@@ -219,3 +187,41 @@ class ChatViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return Response({"error": "User ID and Therapist ID are required"}, status=400)
+
+class TherapistViewSet(viewsets.ModelViewSet):
+    queryset = Therapist.objects.all()
+    serializer_class = TherapistSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['id', 'email']
+    search_fields = ['name', 'email']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data, status=201)
+
+        # Log validation errors for debugging
+        print(serializer.errors)  # This will print the errors to the console
+        return Response(serializer.errors, status=400)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()  # Get therapist instance based on the ID from the URL
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def get_object(self):
+        """ Override to allow fetching by email if provided in the URL. """
+        email = self.kwargs.get('email')  # Assuming email is passed in the URL
+        if email:
+            try:
+                return Therapist.objects.get(email=email)
+            except Therapist.DoesNotExist:
+                raise Http404("Therapist not found")
+        return super().get_object()  # Fallback to default behavior
