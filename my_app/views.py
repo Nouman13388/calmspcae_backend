@@ -2,10 +2,12 @@ from django.http import Http404
 from rest_framework import viewsets, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article
+from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article, \
+    ChatMessage, Therapist
 from .serializers import (
     UserSerializer, ProfileSerializer, AssessmentSerializer, HealthDataSerializer,
-    FeedbackSerializer, ProfessionalSerializer, AppointmentSerializer, ClinicSerializer, ArticleSerializer
+    FeedbackSerializer, ProfessionalSerializer, AppointmentSerializer, ClinicSerializer, ArticleSerializer,
+    ChatMessageSerializer, TherapistSerializer
 )
 import requests
 from rest_framework.decorators import api_view
@@ -37,7 +39,6 @@ def get_mental_health_content(request):
 
 # User view set for user management
 from rest_framework.decorators import action
-from rest_framework.response import Response
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -59,8 +60,6 @@ class UserViewSet(viewsets.ModelViewSet):
             except User.DoesNotExist:
                 return Response({"error": "User not found"}, status=404)
         return Response({"error": "Email parameter is required"}, status=400)
-
-
 
 
 # Profile management without unnecessary permissions
@@ -95,10 +94,6 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.all()
     permission_classes = [AllowAny]  # Allow access without authentication
-
-
-# Professional management
-from rest_framework.permissions import AllowAny  # Make sure to import AllowAny
 
 
 class ProfessionalViewSet(viewsets.ModelViewSet):
@@ -136,6 +131,7 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+
 # Appointment management
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
@@ -161,3 +157,65 @@ class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [AllowAny]  # Allow access without authentication
+
+
+class TherapistViewSet(viewsets.ModelViewSet):
+    queryset = Therapist.objects.all()
+    serializer_class = TherapistSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['id', 'email']
+    search_fields = ['name', 'email']
+
+    def create(self, request, *args, **kwargs):
+        user_id = request.data.get('user')
+        if not user_id:
+            return Response({'error': 'User ID must be provided.'}, status=400)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found.'}, status=404)
+
+        data = request.data.copy()
+        data['user'] = user_id
+        serializer = self.get_serializer(data=data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+
+        self.perform_create(serializer)
+        return Response(serializer.data, status=201)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+# Chat view set for managing chat messages
+class ChatViewSet(viewsets.ModelViewSet):
+    queryset = ChatMessage.objects.all()
+    serializer_class = ChatMessageSerializer
+    permission_classes = [AllowAny]  # Adjust permissions as needed
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def list(self, request, *args, **kwargs):
+        user = request.query_params.get('user_id')
+        therapist = request.query_params.get('therapist_id')
+
+        if user and therapist:
+            messages = self.queryset.filter(user_id=user, therapist_id=therapist)
+            serializer = self.get_serializer(messages, many=True)
+            return Response(serializer.data)
+
+        return Response({"error": "User ID and Therapist ID are required"}, status=400)

@@ -36,6 +36,43 @@ class User(AbstractBaseUser):
         db_table = 'user_table'
 
 
+# Therapist Manager
+class TherapistManager(BaseUserManager):
+    def create_therapist(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        therapist = self.model(email=email, **extra_fields)
+        therapist.set_password(password)
+        therapist.save(using=self._db)
+        return therapist
+
+    def create_supertherapist(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_therapist(email, password, **extra_fields)
+
+
+# Therapist Model
+class Therapist(AbstractBaseUser):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    specialization = models.CharField(max_length=255)
+    bio = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'specialization']
+
+    objects = TherapistManager()
+
+    class Meta:
+        db_table = 'therapist_table'
+
+
+# Other models remain unchanged...
 # Profile Model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -94,7 +131,6 @@ class Professional(models.Model):
         db_table = 'professional_table'
 
 
-
 # Appointment Model
 class Appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -124,10 +160,17 @@ class Clinic(models.Model):
         db_table = 'clinic_table'
 
 
-
 # Article Model
 class Article(models.Model):
     content = models.JSONField()  # Field that accepts an object
 
     class Meta:
         db_table = 'article_table'
+
+
+# ChatMessage Model
+class ChatMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    therapist = models.ForeignKey(Professional, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)  # Optional, for timestamp

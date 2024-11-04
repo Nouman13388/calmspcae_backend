@@ -58,13 +58,13 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ASGI_APPLICATION = 'calmspcae_backend.asgi.application'  # Updated project name
+ASGI_APPLICATION = 'core.asgi.application'
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],  # WSL IP address
+            "hosts": [('50.19.24.133', 6379)],
         },
     },
 }
@@ -97,8 +97,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'calmspcae_backend.wsgi.application'  # Updated project name
 
 DATABASES = {
     'default': {
