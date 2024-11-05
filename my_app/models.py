@@ -171,6 +171,6 @@ class Article(models.Model):
 # ChatMessage Model
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    therapist = models.ForeignKey(Professional, on_delete=models.CASCADE)
+    therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)  # Optional, for timestamp
