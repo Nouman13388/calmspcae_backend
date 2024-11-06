@@ -176,18 +176,8 @@ class TherapistViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'email']
 
     def create(self, request, *args, **kwargs):
-        user_id = request.data.get('user')
-        if not user_id:
-            return Response({'error': 'User ID must be provided.'}, status=400)
-
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found.'}, status=404)
-
-        data = request.data.copy()
-        data['user'] = user_id
-        serializer = self.get_serializer(data=data)
+        # Directly pass the data to the serializer without checking for user_id
+        serializer = self.get_serializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
@@ -203,6 +193,7 @@ class TherapistViewSet(viewsets.ModelViewSet):
             self.perform_update(serializer)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
+
 
 # Chat view set for managing chat messages
 class ChatViewSet(viewsets.ModelViewSet):

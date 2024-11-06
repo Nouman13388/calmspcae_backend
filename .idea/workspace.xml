@@ -6,18 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ee14e5f7-b8c7-4b2b-b1fe-4979731b992c" name="Changes" comment="https setup done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0002_remove_professional_email_remove_professional_name_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0003_alter_professional_user.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0004_article.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0005_chatmessage.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0006_rename_timestamp_chatmessage_created_at_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/migrations/0007_therapist.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_app/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_app/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_app/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +125,7 @@
       <workItem from="1730554860328" duration="438000" />
       <workItem from="1730555437562" duration="17263000" />
       <workItem from="1730736622409" duration="15591000" />
-      <workItem from="1730873578243" duration="3888000" />
+      <workItem from="1730873578243" duration="5902000" />
     </task>
     <task id="LOCAL-00001" summary="https setup done">
       <option name="closed" value="true" />
