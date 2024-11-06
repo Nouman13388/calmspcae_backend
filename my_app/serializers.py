@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article, \
-    ChatMessage, Therapist
+    ChatMessage, Therapist, UserAppointment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -51,6 +51,11 @@ class TherapistSerializer(serializers.ModelSerializer):
 class ProfessionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professional
+        fields = '__all__'
+
+class UserAppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAppointment
         fields = '__all__'
 
 class AppointmentSerializer(serializers.ModelSerializer):

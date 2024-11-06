@@ -3,11 +3,11 @@ from rest_framework import viewsets, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article, \
-    ChatMessage, Therapist
+    ChatMessage, Therapist, UserAppointment
 from .serializers import (
     UserSerializer, ProfileSerializer, AssessmentSerializer, HealthDataSerializer,
     FeedbackSerializer, ProfessionalSerializer, AppointmentSerializer, ClinicSerializer, ArticleSerializer,
-    ChatMessageSerializer, TherapistSerializer
+    ChatMessageSerializer, TherapistSerializer, UserAppointmentSerializer
 )
 import requests
 from rest_framework.decorators import api_view
@@ -131,6 +131,14 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+
+class UserAppointmentViewSet(viewsets.ModelViewSet):
+    queryset = UserAppointment.objects.all()
+    serializer_class = UserAppointmentSerializer
+    permission_classes = [AllowAny]  # Allow access without authentication (adjust as needed)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['user', 'therapist', 'status']  # Filter by user, therapist, and status
+    search_fields = ['user__name', 'therapist__name', 'status']
 
 # Appointment management
 class AppointmentViewSet(viewsets.ModelViewSet):

@@ -134,7 +134,7 @@ class Professional(models.Model):
 # Appointment Model
 class Appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
+    professionals = models.ForeignKey(Professional, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     status = models.CharField(max_length=255)
@@ -144,6 +144,17 @@ class Appointment(models.Model):
     class Meta:
         db_table = 'appointment_table'
 
+class UserAppointment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    status = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_appointment_table'
 
 # Clinic Model
 class Clinic(models.Model):
