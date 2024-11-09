@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import User, Profile, Assessment, HealthData, Feedback, Professional, Appointment, Clinic, Article, \
@@ -83,10 +83,29 @@ class AssessmentViewSet(viewsets.ModelViewSet):
 
 
 # Health data management
+# Health data management
 class HealthDataViewSet(viewsets.ModelViewSet):
     queryset = HealthData.objects.all()
     serializer_class = HealthDataSerializer
     permission_classes = [AllowAny]  # Allow access without authentication
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned health data to a specific user,
+        by filtering against a `user_id` query parameter in the URL.
+        """
+        user_id = self.request.query_params.get('user_id', None)
+
+        if user_id is not None:
+            try:
+                # Try to filter by user_id if provided
+                return HealthData.objects.filter(user=user_id)
+            except ValueError:
+                # If user_id is invalid or filtering fails, return bad request
+                return Response({'detail': 'Invalid user_id provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If no user_id provided, return all records
+        return HealthData.objects.all()
 
 
 # Feedback management
@@ -131,14 +150,31 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
-
 class UserAppointmentViewSet(viewsets.ModelViewSet):
     queryset = UserAppointment.objects.all()
     serializer_class = UserAppointmentSerializer
-    permission_classes = [AllowAny]  # Allow access without authentication (adjust as needed)
+    permission_classes = [AllowAny]  # Allow access without authentication
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['user', 'therapist', 'status']  # Filter by user, therapist, and status
     search_fields = ['user__name', 'therapist__name', 'status']
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned user appointments to a specific user and therapist,
+        by filtering against `user_id` and `therapist_id` query parameters in the URL.
+        """
+        user_id = self.request.query_params.get('user_id', None)
+        therapist_id = self.request.query_params.get('therapist_id', None)
+
+        queryset = UserAppointment.objects.all()
+
+        if user_id:
+            queryset = queryset.filter(user=user_id)
+
+        if therapist_id:
+            queryset = queryset.filter(therapist=therapist_id)
+
+        return queryset
 
 # Appointment management
 class AppointmentViewSet(viewsets.ModelViewSet):
