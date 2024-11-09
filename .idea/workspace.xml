@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ee14e5f7-b8c7-4b2b-b1fe-4979731b992c" name="Changes" comment="https setup done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_app/serializers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,6 +126,7 @@
       <workItem from="1730736622409" duration="15591000" />
       <workItem from="1730873578243" duration="10507000" />
       <workItem from="1731139349309" duration="2017000" />
+      <workItem from="1731159724996" duration="775000" />
     </task>
     <task id="LOCAL-00001" summary="https setup done">
       <option name="closed" value="true" />

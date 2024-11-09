@@ -76,9 +76,13 @@ class ProfessionalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserAppointmentSerializer(serializers.ModelSerializer):
+    start_time = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    end_time = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+
     class Meta:
         model = UserAppointment
         fields = '__all__'
+
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
