@@ -72,8 +72,6 @@ class Therapist(AbstractBaseUser):
         db_table = 'therapist_table'
 
 
-# Other models remain unchanged...
-# Profile Model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField()
@@ -85,7 +83,6 @@ class Profile(models.Model):
 
     class Meta:
         db_table = 'profile_table'
-
 
 # Assessment Model
 class Assessment(models.Model):

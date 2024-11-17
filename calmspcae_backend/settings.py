@@ -4,10 +4,10 @@ import environ
 
 # Initialize environment variables
 env = environ.Env()
-environ.Env.read_env()  # Reads the .env file
+environ.Env.read_env()  # Reads the .env file if available
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -16,7 +16,18 @@ SECRET_KEY = config('SECRET_KEY')
 IS_PRODUCTION = config('IS_PRODUCTION', default=False, cast=bool)
 DEBUG = not IS_PRODUCTION  # Set DEBUG to True only in development
 
-ALLOWED_HOSTS = ['50.19.24.133','16.171.9.75', '127.0.0.1', 'localhost', '.vercel.app', '.now.sh']  # Add more hosts as needed
+ALLOWED_HOSTS = [
+    '50.19.24.133', '16.171.9.75', '127.0.0.1', 'localhost', '.vercel.app', '.now.sh'
+]  # Add more hosts as needed
+
+# Media files (uploads)
+MEDIA_URL = '/media/'  # URL path for serving media files
+MEDIA_ROOT = BASE_DIR / 'media'  # Local directory where media files are stored
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'  # URL path for serving static files
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Directories where static files are stored
+STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'  # Output directory for static files in production
 
 # Application definition
 INSTALLED_APPS = [
@@ -35,11 +46,11 @@ INSTALLED_APPS = [
 ]
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = not IS_PRODUCTION  # Allow all origins in development
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend development URL
     "https://your-production-domain.com",  # Replace with actual production domain
-    "http://172.17.239.232:8000",
+    "http://172.17.239.232:8000",  # Another example URL
 ]
 
 # Security settings
@@ -47,7 +58,7 @@ SECURE_SSL_REDIRECT = IS_PRODUCTION  # Enable SSL redirection in production
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_SECONDS = 31536000  # One year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = IS_PRODUCTION
@@ -98,6 +109,7 @@ TEMPLATES = [
     },
 ]
 
+# Database configuration (using django-environ for flexibility)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -109,6 +121,7 @@ DATABASES = {
     }
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -129,11 +142,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
