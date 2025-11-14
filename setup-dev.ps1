@@ -53,8 +53,8 @@ if (-not (Test-Path .\static)) {
 Write-Host "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# 8) Start development server in background
-Write-Host "Starting development server on http://0.0.0.0:8000 (background)..."
-Start-Process -NoNewWindow -FilePath .\.venv\Scripts\python.exe -ArgumentList 'manage.py','runserver','0.0.0.0:8000'
+# 8) Run migrations first
+Write-Host "Running migrations..."
+python manage.py migrate
 
-Write-Host "Setup complete. Open http://localhost:8000 in your browser."
+Write-Host "Setup complete!"

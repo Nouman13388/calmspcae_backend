@@ -1,0 +1,186 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+*.sublime-package
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/static
+.env.local
+.env.*.local
+.env
+
+
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Node (if using frontend tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Misc
+.env
+.env.*.local
+secrets/
+.pre-commit-config.yaml
+instance/
+
+# IDE specific
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/tasks.json
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+$RECYCLE.BIN/
+ehthumbs.db
+Thumbs.db
+
+# Linux
+.directory
+
+# Production files
+*.pem
+*.key
+*.crt
+*.der
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Local development
+local_*.py
+test_*.py
+debug.log
+
+# Generated files
+migrations/versions/
+alembic/versions/
+
+# Media and static files (if not already listed)
+media/*
+static/*
+!media/.gitkeep
+!static/.gitkeep
+
+# Environment specific
+.env.development
+.env.production
+.env.staging
+.env.testing
+
+# IDE
+.editorconfig
+
+# Credentials and secrets
+secrets.json
+credentials.json
+.aws/
+.gcp/
+.azure/
+
+# Poetry
+poetry.lock
+
+# Pipenv
+Pipfile.lock
+
+# Project specific
+*.pid
+run.pid
+logs/
+*.log.*
+
+# DO NOT IGNORE
+!.gitignore
+!manage.py
+!requirements.txt
+!requirements-dev.txt
+!setup-dev.ps1
