@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CalmSpace - Subscription Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        opacity: 0.9;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .card h2 {
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #667eea;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 5px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        color: white;
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+        color: white;
+      }
+
+      .response-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .response-box pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 12px;
+        color: #333;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-active {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-expired {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .status-trial {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin-top: 15px;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .feature-list li:last-child {
+        border-bottom: none;
+      }
+
+      .feature-icon {
+        font-size: 18px;
+      }
+
+      .plan-card {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        transition: all 0.3s;
+      }
+
+      .plan-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+      }
+
+      .plan-card.premium {
+        border-color: #ffd700;
+        background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+      }
+
+      .plan-price {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .plan-price span {
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .user-select {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ddd;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.3s;
+      }
+
+      .tab:hover {
+        background: #f8f9fa;
+      }
+
+      .tab.active {
+        border-bottom-color: #667eea;
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🧘 CalmSpace Subscription Manager</h1>
+        <p>RevenueCat Integration Test Dashboard</p>
+      </div>
+
+      <div class="user-select card">
+        <h3>Select or Create User</h3>
+        <div class="form-group">
+          <label>Select Existing User</label>
+          <select id="userSelect" onchange="selectUser()">
+            <option value="">-- Loading users... --</option>
+          </select>
+        </div>
+        <div id="selectedUserInfo" style="display: none">
+          <p>
+            <strong>Selected User:</strong>
+            <span id="selectedUserName"></span> (<span
+              id="selectedUserEmail"
+            ></span
+            >)
+          </p>
+          <p><strong>User ID:</strong> <span id="selectedUserId"></span></p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- Subscription Status Card -->
+        <div class="card">
+          <h2>📊 Subscription Status</h2>
+          <div id="subscriptionStatus">
+            <p>Select a user to view subscription status</p>
+          </div>
+          <div class="loading" id="statusLoading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+          </div>
+          <button class="btn btn-primary" onclick="checkSubscriptionStatus()">
+            Refresh Status
+          </button>
+          <button class="btn btn-info" onclick="syncSubscription()">
+            Sync from RevenueCat
+          </button>
+          <div class="response-box" id="statusResponse" style="display: none">
+            <pre id="statusResponseText"></pre>
+          </div>
+        </div>
+
+        <!-- Create/Link Subscription Card -->
+        <div class="card">
+          <h2>🔗 Create/Link Subscription</h2>
+          <div class="form-group">
+            <label>RevenueCat App User ID</label>
+            <input
+              type="text"
+              id="revenuecatUserId"
+              placeholder="Enter RevenueCat App User ID"
+            />
+            <small style="color: #888">Usually the user's email or UUID</small>
+          </div>
+          <button class="btn btn-primary" onclick="createOrLinkSubscription()">
+            Create/Link Subscription
+          </button>
+          <button class="btn btn-info" onclick="generateRevenueCatId()">
+            Auto-Generate ID
+          </button>
+          <div class="response-box" id="createResponse" style="display: none">
+            <pre id="createResponseText"></pre>
+          </div>
+        </div>
+
+        <!-- Promotional Access Card -->
+        <div class="card">
+          <h2>🎁 Promotional Access</h2>
+          <div class="form-group">
+            <label>Duration</label>
+            <select id="promotionalDuration">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly" selected>Monthly</option>
+              <option value="three_month">3 Months</option>
+              <option value="six_month">6 Months</option>
+              <option value="yearly">Yearly</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Entitlement ID</label>
+            <input
+              type="text"
+              id="entitlementId"
+              value="premium"
+              placeholder="e.g., premium"
+            />
+          </div>
+          <button class="btn btn-success" onclick="grantPromotionalAccess()">
+            Grant Premium Access
+          </button>
+          <button class="btn btn-danger" onclick="revokePromotionalAccess()">
+            Revoke Access
+          </button>
+          <div
+            class="response-box"
+            id="promotionalResponse"
+            style="display: none"
+          >
+            <pre id="promotionalResponseText"></pre>
+          </div>
+        </div>
+
+        <!-- Feature Access Check Card -->
+        <div class="card">
+          <h2>✅ Feature Access</h2>
+          <div class="form-group">
+            <label>Select Feature</label>
+            <select id="featureSelect">
+              <option value="unlimited_appointments">
+                Unlimited Appointments
+              </option>
+              <option value="premium_therapists">Premium Therapists</option>
+              <option value="unlimited_chat">Unlimited Chat</option>
+              <option value="priority_support">Priority Support</option>
+              <option value="exclusive_content">Exclusive Content</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="checkFeatureAccess()">
+            Check Access
+          </button>
+          <div class="response-box" id="featureResponse" style="display: none">
+            <pre id="featureResponseText"></pre>
+          </div>
+        </div>
+
+        <!-- Subscription Plans Card -->
+        <div class="card">
+          <h2>💳 Subscription Plans</h2>
+          <button class="btn btn-primary" onclick="loadPlans()">
+            Load Plans
+          </button>
+          <button class="btn btn-success" onclick="showCreatePlanForm()">
+            Create Plan
+          </button>
+          <div id="plansContainer"></div>
+          <div id="createPlanForm" style="display: none; margin-top: 20px">
+            <h3>Create New Plan</h3>
+            <div class="form-group">
+              <label>Plan Name</label>
+              <input
+                type="text"
+                id="planName"
+                placeholder="e.g., Premium Monthly"
+              />
+            </div>
+            <div class="form-group">
+              <label>Plan Type</label>
+              <select id="planType">
+                <option value="free">Free</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+                <option value="lifetime">Lifetime</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>RevenueCat Product ID</label>
+              <input
+                type="text"
+                id="planProductId"
+                placeholder="e.g., com.calmspace.premium_monthly"
+              />
+            </div>
+            <div class="form-group">
+              <label>Price (USD)</label>
+              <input
+                type="number"
+                id="planPrice"
+                step="0.01"
+                placeholder="9.99"
+              />
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input
+                type="text"
+                id="planDescription"
+                placeholder="Plan description"
+              />
+            </div>
+            <div class="form-group">
+              <label>Features (check all that apply):</label>
+              <div>
+                <input type="checkbox" id="planUnlimitedAppointments" />
+                Unlimited Appointments
+              </div>
+              <div>
+                <input type="checkbox" id="planPremiumTherapists" /> Premium
+                Therapists
+              </div>
+              <div>
+                <input type="checkbox" id="planUnlimitedChat" /> Unlimited Chat
+              </div>
+              <div>
+                <input type="checkbox" id="planPrioritySupport" /> Priority
+                Support
+              </div>
+              <div>
+                <input type="checkbox" id="planExclusiveContent" /> Exclusive
+                Content
+              </div>
+            </div>
+            <button class="btn btn-success" onclick="createPlan()">
+              Save Plan
+            </button>
+            <button class="btn btn-danger" onclick="hideCreatePlanForm()">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Transaction History Card -->
+        <div class="card">
+          <h2>📜 Transaction History</h2>
+          <button class="btn btn-primary" onclick="loadTransactions()">
+            Load Transactions
+          </button>
+          <div
+            id="transactionsContainer"
+            class="response-box"
+            style="max-height: 400px"
+          >
+            <p>Click to load transaction history</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Webhook Test Section -->
+      <div class="card" style="margin-top: 20px">
+        <h2>🪝 Webhook Simulator</h2>
+        <p style="color: #666; margin-bottom: 15px">
+          Simulate RevenueCat webhook events for testing
+        </p>
+        <div class="grid">
+          <div>
+            <div class="form-group">
+              <label>Event Type</label>
+              <select id="webhookEventType">
+                <option value="INITIAL_PURCHASE">Initial Purchase</option>
+                <option value="RENEWAL">Renewal</option>
+                <option value="CANCELLATION">Cancellation</option>
+                <option value="EXPIRATION">Expiration</option>
+                <option value="BILLING_ISSUE">Billing Issue</option>
+                <option value="UNCANCELLATION">Uncancellation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Product ID</label>
+              <input
+                type="text"
+                id="webhookProductId"
+                value="com.calmspace.premium_monthly"
+              />
+            </div>
+            <button class="btn btn-primary" onclick="simulateWebhook()">
+              Send Webhook
+            </button>
+          </div>
+          <div>
+            <div class="response-box" id="webhookResponse">
+              <pre id="webhookResponseText">
+Webhook response will appear here</pre
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Endpoints Reference -->
+      <div class="card" style="margin-top: 20px">
+        <h2>📚 API Reference</h2>
+        <div class="tabs">
+          <div class="tab active" onclick="showApiTab('plans')">Plans</div>
+          <div class="tab" onclick="showApiTab('subscriptions')">
+            Subscriptions
+          </div>
+          <div class="tab" onclick="showApiTab('webhooks')">Webhooks</div>
+        </div>
+        <div id="api-plans" class="tab-content active">
+          <h3>Subscription Plans</h3>
+          <ul>
+            <li><code>GET /api/subscriptions/plans/</code> - List all plans</li>
+            <li><code>POST /api/subscriptions/plans/</code> - Create a plan</li>
+            <li>
+              <code>GET /api/subscriptions/plans/{id}/</code> - Get plan details
+            </li>
+          </ul>
+        </div>
+        <div id="api-subscriptions" class="tab-content">
+          <h3>User Subscriptions</h3>
+          <ul>
+            <li>
+              <code>GET /api/subscriptions/user-subscriptions/</code> - List
+              subscriptions
+            </li>
+            <li>
+              <code
+                >GET
+                /api/subscriptions/user-subscriptions/status/?user_id={id}</code
+              >
+              - Get status
+            </li>
+            <li>
+              <code
+                >POST
+                /api/subscriptions/user-subscriptions/create_or_link/</code
+              >
+              - Create/link
+            </li>
+            <li>
+              <code>POST /api/subscriptions/user-subscriptions/sync/</code> -
+              Sync from RevenueCat
+            </li>
+            <li>
+              <code>POST /api/subscriptions/grant-promotional/</code> - Grant
+              promo access
+            </li>
+            <li>
+              <code>POST /api/subscriptions/revoke-promotional/</code> - Revoke
+              promo access
+            </li>
+            <li>
+              <code
+                >GET
+                /api/subscriptions/check-feature/?user_id={id}&feature={name}</code
+              >
+              - Check feature
+            </li>
+          </ul>
+        </div>
+        <div id="api-webhooks" class="tab-content">
+          <h3>Webhooks</h3>
+          <ul>
+            <li>
+              <code>POST /api/subscriptions/webhook/revenuecat/</code> -
+              RevenueCat webhook endpoint
+            </li>
+          </ul>
+          <p style="margin-top: 10px; color: #666">
+            Configure this URL in your RevenueCat dashboard under "Webhooks"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "/api";
+      let selectedUserId = null;
+      let users = [];
+
+      // Load users on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        loadUsers();
+      });
+
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_BASE}/users/`);
+          users = await response.json();
+
+          const select = document.getElementById("userSelect");
+          select.innerHTML = '<option value="">-- Select a user --</option>';
+
+          users.forEach((user) => {
+            const option = document.createElement("option");
+            option.value = user.id;
+            option.textContent = `${user.name} (${user.email})`;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error loading users:", error);
+          document.getElementById("userSelect").innerHTML =
+            '<option value="">Error loading users</option>';
+        }
+      }
+
+      function selectUser() {
+        const select = document.getElementById("userSelect");
+        selectedUserId = select.value;
+
+        if (selectedUserId) {
+          const user = users.find((u) => u.id == selectedUserId);
+          if (user) {
+            document.getElementById("selectedUserInfo").style.display = "block";
+            document.getElementById("selectedUserName").textContent = user.name;
+            document.getElementById("selectedUserEmail").textContent =
+              user.email;
+            document.getElementById("selectedUserId").textContent = user.id;
+
+            // Auto-fill RevenueCat ID
+            document.getElementById(
+              "revenuecatUserId"
+            ).value = `calmspace_${user.id}`;
+
+            // Load subscription status
+            checkSubscriptionStatus();
+          }
+        } else {
+          document.getElementById("selectedUserInfo").style.display = "none";
+        }
+      }
+
+      function generateRevenueCatId() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+        const user = users.find((u) => u.id == selectedUserId);
+        document.getElementById(
+          "revenuecatUserId"
+        ).value = `calmspace_${user.email.replace("@", "_at_")}`;
+      }
+
+      async function checkSubscriptionStatus() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        showLoading("statusLoading");
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/user-subscriptions/status/?user_id=${selectedUserId}`
+          );
+          const data = await response.json();
+
+          displaySubscriptionStatus(data);
+          showResponse("statusResponse", "statusResponseText", data);
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById(
+            "subscriptionStatus"
+          ).innerHTML = `<div class="alert alert-error">Error: ${error.message}</div>`;
+        }
+
+        hideLoading("statusLoading");
+      }
+
+      function displaySubscriptionStatus(data) {
+        const statusClass = data.is_premium
+          ? "status-active"
+          : "status-expired";
+        const statusText = data.is_premium
+          ? "PREMIUM"
+          : data.status.toUpperCase();
+
+        let html = `
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </div>
+            `;
+
+        if (data.plan_name) {
+          html += `<p><strong>Plan:</strong> ${data.plan_name}</p>`;
+        }
+
+        if (data.expires_at) {
+          html += `<p><strong>Expires:</strong> ${new Date(
+            data.expires_at
+          ).toLocaleDateString()}</p>`;
+        }
+
+        html += `<ul class="feature-list">`;
+        for (const [feature, enabled] of Object.entries(data.features || {})) {
+          const icon = enabled ? "✅" : "❌";
+          const featureName = feature
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (l) => l.toUpperCase());
+          html += `<li><span>${featureName}</span><span class="feature-icon">${icon}</span></li>`;
+        }
+        html += `</ul>`;
+
+        document.getElementById("subscriptionStatus").innerHTML = html;
+      }
+
+      async function syncSubscription() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        showLoading("statusLoading");
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/user-subscriptions/sync/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: selectedUserId }),
+            }
+          );
+          const data = await response.json();
+
+          showResponse("statusResponse", "statusResponseText", data);
+          checkSubscriptionStatus();
+        } catch (error) {
+          console.error("Error:", error);
+          showResponse("statusResponse", "statusResponseText", {
+            error: error.message,
+          });
+        }
+
+        hideLoading("statusLoading");
+      }
+
+      async function createOrLinkSubscription() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        const revenuecatId = document.getElementById("revenuecatUserId").value;
+        if (!revenuecatId) {
+          alert("Please enter a RevenueCat App User ID");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/user-subscriptions/create_or_link/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: selectedUserId,
+                revenuecat_app_user_id: revenuecatId,
+              }),
+            }
+          );
+          const data = await response.json();
+
+          showResponse("createResponse", "createResponseText", data);
+          checkSubscriptionStatus();
+        } catch (error) {
+          console.error("Error:", error);
+          showResponse("createResponse", "createResponseText", {
+            error: error.message,
+          });
+        }
+      }
+
+      async function grantPromotionalAccess() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        const duration = document.getElementById("promotionalDuration").value;
+        const entitlementId = document.getElementById("entitlementId").value;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/grant-promotional/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: selectedUserId,
+                duration: duration,
+                entitlement_id: entitlementId,
+              }),
+            }
+          );
+          const data = await response.json();
+
+          showResponse("promotionalResponse", "promotionalResponseText", data);
+          checkSubscriptionStatus();
+        } catch (error) {
+          console.error("Error:", error);
+          showResponse("promotionalResponse", "promotionalResponseText", {
+            error: error.message,
+          });
+        }
+      }
+
+      async function revokePromotionalAccess() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        const entitlementId = document.getElementById("entitlementId").value;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/revoke-promotional/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: selectedUserId,
+                entitlement_id: entitlementId,
+              }),
+            }
+          );
+          const data = await response.json();
+
+          showResponse("promotionalResponse", "promotionalResponseText", data);
+          checkSubscriptionStatus();
+        } catch (error) {
+          console.error("Error:", error);
+          showResponse("promotionalResponse", "promotionalResponseText", {
+            error: error.message,
+          });
+        }
+      }
+
+      async function checkFeatureAccess() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        const feature = document.getElementById("featureSelect").value;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/check-feature/?user_id=${selectedUserId}&feature=${feature}`
+          );
+          const data = await response.json();
+
+          const resultHtml = `
+                    <div style="text-align: center; padding: 20px;">
+                        <span style="font-size: 48px;">${
+                          data.has_access ? "✅" : "❌"
+                        }</span>
+                        <p style="margin-top: 10px; font-weight: bold;">
+                            ${
+                              data.has_access
+                                ? "Access Granted"
+                                : "Access Denied"
+                            }
+                        </p>
+                    </div>
+                `;
+          document.getElementById("featureResponse").innerHTML = resultHtml;
+          document.getElementById("featureResponse").style.display = "block";
+        } catch (error) {
+          console.error("Error:", error);
+          showResponse("featureResponse", "featureResponseText", {
+            error: error.message,
+          });
+        }
+      }
+
+      async function loadPlans() {
+        try {
+          const response = await fetch(`${API_BASE}/subscriptions/plans/`);
+          const plans = await response.json();
+
+          let html = "";
+          if (plans.length === 0) {
+            html = "<p>No plans found. Create one!</p>";
+          } else {
+            plans.forEach((plan) => {
+              const isPremium = plan.plan_type !== "free";
+              html += `
+                            <div class="plan-card ${
+                              isPremium ? "premium" : ""
+                            }">
+                                <h3>${plan.name}</h3>
+                                <div class="plan-price">$${
+                                  plan.price
+                                } <span>/ ${plan.plan_type}</span></div>
+                                <p>${plan.description || "No description"}</p>
+                                <small>Product ID: ${
+                                  plan.revenuecat_product_id
+                                }</small>
+                            </div>
+                        `;
+            });
+          }
+
+          document.getElementById("plansContainer").innerHTML = html;
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById(
+            "plansContainer"
+          ).innerHTML = `<div class="alert alert-error">Error: ${error.message}</div>`;
+        }
+      }
+
+      function showCreatePlanForm() {
+        document.getElementById("createPlanForm").style.display = "block";
+      }
+
+      function hideCreatePlanForm() {
+        document.getElementById("createPlanForm").style.display = "none";
+      }
+
+      async function createPlan() {
+        const planData = {
+          name: document.getElementById("planName").value,
+          plan_type: document.getElementById("planType").value,
+          revenuecat_product_id: document.getElementById("planProductId").value,
+          price: parseFloat(document.getElementById("planPrice").value) || 0,
+          description: document.getElementById("planDescription").value,
+          unlimited_appointments: document.getElementById(
+            "planUnlimitedAppointments"
+          ).checked,
+          premium_therapists: document.getElementById("planPremiumTherapists")
+            .checked,
+          unlimited_chat: document.getElementById("planUnlimitedChat").checked,
+          priority_support: document.getElementById("planPrioritySupport")
+            .checked,
+          exclusive_content: document.getElementById("planExclusiveContent")
+            .checked,
+        };
+
+        try {
+          const response = await fetch(`${API_BASE}/subscriptions/plans/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(planData),
+          });
+          const data = await response.json();
+
+          if (response.ok) {
+            alert("Plan created successfully!");
+            hideCreatePlanForm();
+            loadPlans();
+          } else {
+            alert("Error: " + JSON.stringify(data));
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error creating plan: " + error.message);
+        }
+      }
+
+      async function loadTransactions() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/transactions/?user_id=${selectedUserId}`
+          );
+          const transactions = await response.json();
+
+          let html = "";
+          if (transactions.length === 0) {
+            html = "<p>No transactions found</p>";
+          } else {
+            transactions.forEach((tx) => {
+              html += `
+                            <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                                <strong>${tx.event_type}</strong>
+                                <p>Product: ${tx.product_id}</p>
+                                <p>Date: ${new Date(
+                                  tx.created_at
+                                ).toLocaleString()}</p>
+                                ${
+                                  tx.price
+                                    ? `<p>Price: $${tx.price} ${
+                                        tx.currency || ""
+                                      }</p>`
+                                    : ""
+                                }
+                            </div>
+                        `;
+            });
+          }
+
+          document.getElementById("transactionsContainer").innerHTML = html;
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById(
+            "transactionsContainer"
+          ).innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+      }
+
+      async function simulateWebhook() {
+        if (!selectedUserId) {
+          alert("Please select a user first");
+          return;
+        }
+
+        // First, get the subscription to get the revenuecat_app_user_id
+        let subscription;
+        try {
+          const subResponse = await fetch(
+            `${API_BASE}/subscriptions/user-subscriptions/?user_id=${selectedUserId}`
+          );
+          const subscriptions = await subResponse.json();
+          if (subscriptions.length === 0) {
+            alert("Please create/link a subscription first");
+            return;
+          }
+          subscription = subscriptions[0];
+        } catch (error) {
+          alert("Error fetching subscription: " + error.message);
+          return;
+        }
+
+        const eventType = document.getElementById("webhookEventType").value;
+        const productId = document.getElementById("webhookProductId").value;
+
+        const now = Date.now();
+        const thirtyDaysLater = now + 30 * 24 * 60 * 60 * 1000;
+
+        const webhookPayload = {
+          api_version: "1.0",
+          event: {
+            type: eventType,
+            app_user_id: subscription.revenuecat_app_user_id,
+            id: `test_${eventType}_${now}`,
+            product_id: productId,
+            purchased_at_ms: now,
+            expiration_at_ms: thirtyDaysLater,
+            store: "test_store",
+            price: 9.99,
+            currency: "USD",
+          },
+        };
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/subscriptions/webhook/revenuecat/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(webhookPayload),
+            }
+          );
+          const data = await response.json();
+
+          document.getElementById("webhookResponseText").textContent =
+            JSON.stringify(
+              {
+                sent: webhookPayload,
+                response: data,
+              },
+              null,
+              2
+            );
+
+          // Refresh status
+          checkSubscriptionStatus();
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById("webhookResponseText").textContent =
+            "Error: " + error.message;
+        }
+      }
+
+      function showApiTab(tabName) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+
+        event.target.classList.add("active");
+        document.getElementById(`api-${tabName}`).classList.add("active");
+      }
+
+      function showLoading(id) {
+        document.getElementById(id).classList.add("show");
+      }
+
+      function hideLoading(id) {
+        document.getElementById(id).classList.remove("show");
+      }
+
+      function showResponse(containerId, textId, data) {
+        document.getElementById(containerId).style.display = "block";
+        document.getElementById(textId).textContent = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+    </script>
+  </body>
+</html>

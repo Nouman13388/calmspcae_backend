@@ -1,14 +1,13 @@
 """
 Authentication Views - Registration, Login, Email Verification, Password Reset
 """
-from rest_framework import status, viewsets
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
 
-from .models import User, EmailVerificationToken, PasswordResetToken
+from .models import User
 from .auth_serializers import (
     RegisterSerializer, LoginSerializer, VerifyEmailSerializer,
     ForgotPasswordSerializer, PasswordResetSerializer, ChangePasswordSerializer,

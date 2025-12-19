@@ -1,74 +1,105 @@
-# calmspcae_backend
+# CalmSpace Backend
 
-## Project overview
+Django REST API with JWT authentication, email verification, password reset, and role-based access control.
 
-This is a Django backend project using Django 5.1, Django Channels, Django REST Framework and other common packages. The repository name is `calmspcae_backend` (project package `calmspcae_backend`).
+## Quick Start
 
-## Purpose
-
-- Provides REST APIs (via DRF) and WebSocket support (via Channels).
-- Includes an app `my_app` with models and migrations.
-
-## What I changed (dev-friendly)
-
-To make local development easier without MySQL or Redis, the following changes were made to `calmspcae_backend/settings.py`:
-
-- A `DATABASE_ENGINE` environment variable was added. Set it to `sqlite` to use a local SQLite database. By default, the app still uses MySQL when `DATABASE_ENGINE` is not `sqlite`.
-- During development (when `DEBUG=True`), Channels will use the in-memory channel layer (`channels.layers.InMemoryChannelLayer`) so you don't need Redis locally.
-
-## Quick start (Windows - PowerShell)
-
-1. Clone the repo (if not already cloned):
-
-   git clone <repo-url>
-   cd calmspcae_backend
-
-2. Create a Python virtual environment and activate it:
+### 1. Setup
 
 ```powershell
+# Clone and navigate
+git clone <repo-url>
+cd calmspcae_backend
+
+# Create virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-3. Install dependencies (we created a `requirements-dev.txt` that excludes `mysqlclient` for easier Windows installs):
+### 2. Configure
 
-```powershell
-pip install -r requirements-dev.txt
-```
-
-If you need MySQL support later, you can install `mysqlclient` and set `DATABASE_ENGINE` to `mysql` and provide DB credentials in `.env`.
-
-4. Configure environment variables
-
-Create a `.env` file in the repository root (a sample is included in `.env` if present). For development using SQLite, add:
+Create `.env` file:
 
 ```
 DATABASE_ENGINE=sqlite
-SECRET_KEY=your-secret-key
+DEBUG=True
+SECRET_KEY=your-secret-key-here
 IS_PRODUCTION=False
 ```
 
-For production (MySQL), use:
-
-```
-DATABASE_ENGINE=mysql
-DATABASE_NAME=your_db
-DATABASE_USER=your_user
-DATABASE_PASSWORD=your_password
-DATABASE_HOST=your_host
-DATABASE_PORT=3306
-IS_PRODUCTION=True
-SECRET_KEY=your-secret-key
-```
-
-5. Run migrations and start server
+### 3. Initialize Database
 
 ```powershell
 python manage.py migrate
+python manage.py setup_user_groups
+python create_superuser.py
+```
+
+### 4. Run Server
+
+```powershell
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000 in your browser.
+## Access Points
+
+- **API**: http://127.0.0.1:8000/api/
+- **Dashboard**: http://127.0.0.1:8000/dashboard/
+- **Admin**: http://127.0.0.1:8000/admin/
+
+## Test Account
+
+```
+Email: admin@test.com
+Password: admin123
+```
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register/` - Register new user
+- `POST /api/auth/login/` - Login and get JWT tokens
+- `POST /api/auth/verify-email/` - Verify email with token
+- `POST /api/auth/resend-verification-email/` - Resend verification
+
+### Profile Management (requires authentication)
+
+- `GET /api/auth/profile/` - Get user profile
+- `PUT /api/auth/update-profile/` - Update profile
+- `POST /api/auth/change-password/` - Change password
+
+### Password Reset
+
+- `POST /api/auth/forgot-password/` - Request reset email
+- `POST /api/auth/reset-password/` - Reset with token
+
+## Features
+
+- Custom User model with email authentication
+- JWT token-based authentication
+- Email verification system
+- Password reset functionality
+- Role-based access control (Admin, Staff, Customer, Therapist)
+- Profile management with image upload
+- Interactive API dashboard
+
+## Tech Stack
+
+- Django 5.1.1
+- Django REST Framework 3.15.2
+- djangorestframework-simplejwt 5.3.1
+- Python 3.13+
+- SQLite (dev) / MySQL (prod)
+
+## Documentation
+
+- API testing with Postman: Import `CalmSpace_API.postman_collection.json`
+- Full API docs: `AUTHENTICATION_GUIDE.md`
+- Testing guide: `TESTING_GUIDE.md`
 
 ## Notes about Channels (WebSockets)
 

@@ -202,3 +202,8 @@ if DEBUG:
     print("Database Password:", config('DATABASE_PASSWORD'))
     print("Database Host:", config('DATABASE_HOST'))
     print("Database Port:", config('DATABASE_PORT'))
+
+# RevenueCat Configuration
+REVENUECAT_API_KEY = config('REVENUECAT_API_KEY', default='')
+REVENUECAT_WEBHOOK_SECRET = config('REVENUECAT_WEBHOOK_SECRET', default='')
+REVENUECAT_PROJECT_ID = config('REVENUECAT_PROJECT_ID', default='')

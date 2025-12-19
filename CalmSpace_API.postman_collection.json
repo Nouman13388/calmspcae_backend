@@ -4,6 +4,16 @@
         "description": "Collection for testing CalmSpace authentication, email verification, password reset, and profile management endpoints",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY0MzExMjM2LCJpYXQiOjE3NjQzMDc2MzYsImp0aSI6IjhmZjM4ZTdlMWZjMDRlYWJhZjhjZTQ5ZjQwYmFmOGRiIiwidXNlcl9pZCI6MX0.4FZFDObZuQjn4ESUdfDQdhWzQYXPTc1lHt_3uUkimkQ",
+                "type": "string"
+            }
+        ]
+    },
     "item": [
         {
             "name": "Authentication",
@@ -344,12 +354,12 @@
     "variable": [
         {
             "key": "access_token",
-            "value": "",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY0MzExMjM2LCJpYXQiOjE3NjQzMDc2MzYsImp0aSI6IjhmZjM4ZTdlMWZjMDRlYWJhZjhjZTQ5ZjQwYmFmOGRiIiwidXNlcl9pZCI6MX0.4FZFDObZuQjn4ESUdfDQdhWzQYXPTc1lHt_3uUkimkQ",
             "type": "string"
         },
         {
             "key": "refresh_token",
-            "value": "",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2NDkxMjQzNiwiaWF0IjoxNzY0MzA3NjM2LCJqdGkiOiJjYmRjMDY0N2VhMWY0YmIyYWI4NmFlODUyOTBkZTEyYiIsInVzZXJfaWQiOjF9.SqMsQdiUJfQ1rQWVlaGCrLjXD1MpKoCWRDD3WngXlCs",
             "type": "string"
         }
     ]
